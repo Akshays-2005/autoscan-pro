@@ -1,28 +1,25 @@
-import axios from "axios";
-
-// Configure your Flask backend URL here (or via VITE_API_URL env var)
+// Configure your Flask backend URL via VITE_API_URL or change the default below
 export const API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000";
-
-export interface ProcessResponse {
-  imageBlob: Blob;
-}
+  (import.meta.env.VITE_API_URL as string) || "http://localhost:5000";
 
 export async function processDocument(file: File): Promise<Blob> {
   const formData = new FormData();
   formData.append("image", file);
 
-  const response = await axios.post(`${API_URL}/process-document`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-    responseType: "blob",
+  const res = await fetch(`${API_URL}/process-document`, {
+    method: "POST",
+    body: formData,
   });
 
-  // If server returned JSON error with blob responseType, parse it
-  if (response.data.type === "application/json") {
-    const text = await response.data.text();
-    const json = JSON.parse(text);
-    throw new Error(json.error || "Processing failed");
+  const contentType = res.headers.get("content-type") || "";
+  if (!res.ok || contentType.includes("application/json")) {
+    let message = `Request failed (${res.status})`;
+    try {
+      const json = await res.json();
+      message = json.error || message;
+    } catch {}
+    throw new Error(message);
   }
 
-  return response.data as Blob;
+  return await res.blob();
 }
