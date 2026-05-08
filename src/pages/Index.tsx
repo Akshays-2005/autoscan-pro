@@ -105,8 +105,8 @@ const Index = () => {
             </span>
           </h1>
           <p className="mt-4 text-base text-muted-foreground md:text-lg">
-            Upload a tilted document. We auto-detect edges, warp it square,
-            and export a crisp black-and-white copy.
+            Upload a tilted document. We auto-detect edges, warp it straight,
+            and export an enhanced, aligned copy.
           </p>
         </section>
 
@@ -176,7 +176,7 @@ const Index = () => {
               {
                 step: "01",
                 title: "Detect edges",
-                desc: "Grayscale, Gaussian blur and Canny edge detection isolate the page.",
+                desc: "Grayscale conversion, CLAHE contrast enhancement, Gaussian blur, and Canny edge detection isolate the page.",
               },
               {
                 step: "02",
@@ -185,8 +185,8 @@ const Index = () => {
               },
               {
                 step: "03",
-                title: "Warp & threshold",
-                desc: "Perspective transform to 500×700, then binary threshold for a clean scan.",
+                title: "Warp & enhance",
+                desc: "Perspective transform with dynamic sizing, then detail enhancement for clarity.",
               },
             ].map((s) => (
               <div
